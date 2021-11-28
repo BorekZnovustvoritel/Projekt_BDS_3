@@ -14,9 +14,11 @@ public class CourseRepository {
         try (Connection connection = DataSourceConfig.getConnection();
         PreparedStatement prpstmt = connection.prepareStatement(
                 "SELECT c.id, c.name, c.description, u.user_id FROM project.course c " +
-                        "LEFT JOIN project.user_course u ON u.course_id = c.id " +
+                        "LEFT JOIN (SELECT user_id, course_id FROM project.user_course WHERE user_id = ?) u " +
+                        "ON u.course_id = c.id " +
                         "ORDER BY c.id;")
         ) {
+            prpstmt.setInt(1, App.userId);
             return mapToCourseView(prpstmt, connection);
         } catch (SQLException e) {
             //TODO rework this
@@ -76,12 +78,12 @@ public class CourseRepository {
                         "(SELECT id FROM project.lesson WHERE id NOT IN (SELECT lesson_id FROM project.completed_lessons WHERE user_id = ?) AND course_id = ?), " +
                         "get_lowest_id(id) AS " +
                         "(SELECT MIN(id) FROM get_uncompleted_ids) " +
-                        "SELECT link FROM project.lesson WHERE id = (SELECT id FROM get_lowest_id);")) {
+                        "SELECT name FROM project.lesson WHERE id = (SELECT id FROM get_lowest_id);")) {
             preparedStatement.setInt(1, App.userId);
             preparedStatement.setInt(2, courseId);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                return rs.getString("link");
+                return rs.getString("name");
             }
 
         }
