@@ -2,22 +2,26 @@ package org.but.feec.projekt_bds_3.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.api.CommentView;
 import org.but.feec.projekt_bds_3.api.CourseView;
 import org.but.feec.projekt_bds_3.api.LessonView;
 import org.but.feec.projekt_bds_3.data.LessonCommentsRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class LessonController {
+    private CourseController parentController;
+    private CommentView commentView = new CommentView();
     private LessonView lv;
     private CourseView courseView;
     @FXML
@@ -27,8 +31,21 @@ public class LessonController {
     private ListView<String> comments;
     private ArrayList<CommentView> commentsArr;
 
+    ListView<String> getComments() {
+        return comments;
+    }
+    ArrayList<CommentView> getCommentsArr() {
+        return commentsArr;
+    }
+
     @FXML
     private Button completeButton;
+
+    @FXML
+    private Button deleteCommentButton;
+
+    @FXML
+    private Button editCommentButton;
 
     @FXML
     private Label lessonName;
@@ -43,6 +60,9 @@ public class LessonController {
     private Button backButton;
 
     @FXML
+    private CheckBox checkBoxFilterUserComments;
+
+    @FXML
     void handleCompleteLesson(ActionEvent event) {
         LessonCommentsRepository comrep = new LessonCommentsRepository();
         comrep.completeLesson(lv.getId());
@@ -52,6 +72,7 @@ public class LessonController {
             courseView.setUserHasIt(true);
             comrep.registerCourse(courseView.getId());
         }
+        parentController.refreshAll();
     }
 
     @FXML
@@ -63,7 +84,7 @@ public class LessonController {
             System.out.println("Nahráno.");
             //TODO
         }
-        else System.out.println("Ded");
+        //else System.out.println("Ded");
 
         loadComments();
     }
@@ -74,7 +95,10 @@ public class LessonController {
     }
     @FXML
     public void initialize() {}
-    public void initData(LessonView lv, CourseView cv) {
+    public void initData(LessonView lv, CourseView cv, CourseController parentController) {
+        this.parentController = parentController;
+        editCommentButton.setDisable(true);
+        deleteCommentButton.setDisable(true);
         this.courseView = cv;
         this.lv = lv;
         lessonName.setText(lv.getName());
@@ -84,19 +108,75 @@ public class LessonController {
             disableCompleteButton();
         }
     }
+
+    @FXML
+    void handleSelectComment(MouseEvent event) {
+        int idx = comments.getSelectionModel().getSelectedIndex();
+        commentView = commentsArr.get(idx);
+        if (commentView.getUserId() == App.userId) {
+            editCommentButton.setDisable(false);
+            deleteCommentButton.setDisable(false);
+        }
+        else {
+            editCommentButton.setDisable(true);
+            deleteCommentButton.setDisable(true);
+        }
+    }
+
+    @FXML
+    private void handleDeleteComment() {
+        comments.getItems().remove(comments.getSelectionModel().getSelectedIndex());
+        commentsArr.remove(comments.getSelectionModel().getSelectedIndex());
+        (new LessonCommentsRepository()).removeComment(commentView.getId());
+        commentView = new CommentView();
+        editCommentButton.setDisable(true);
+        deleteCommentButton.setDisable(true);
+        comments.refresh();
+    }
+
+    @FXML
+    private void handleEditComment() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(App.class.getResource("fxml/CommentEdit.fxml"));
+            Scene scene = new Scene(loader.load(), 600, 170);
+            Stage stage = new Stage();
+            stage.setTitle("Edit comment");
+            stage.setScene(scene);
+            CommentEditController controller = loader.getController();
+            controller.initData(this, comments.getSelectionModel().getSelectedIndex());
+            stage.show();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+            //TODO
+
+        }
+    }
+
+    @FXML
+    void handleCheckChanged(ActionEvent event) {
+        loadComments();
+    }
+
     private void loadComments() {
         LessonCommentsRepository comrep = new LessonCommentsRepository();
         comments.getItems().clear();
-        commentsArr = comrep.findComments(lv.getId());
-        if (!commentsArr.isEmpty()) {
-            for (CommentView com : commentsArr) {
-                comments.getItems().add(com.getUsername() + ":\n" + com.getText());
-            }
-        }
+        commentsArr = comrep.findComments(lv.getId(), checkBoxFilterUserComments.isSelected());
+        setAllComments(this.commentsArr);
         comments.refresh();
     }
     private void disableCompleteButton() {
         completeButton.setDisable(true);
         completeButton.setText("Already Completed");
+    }
+    void setAllComments(ArrayList<CommentView> commentsArr) {
+        this.commentsArr = commentsArr;
+        comments.getItems().clear();
+        if (!commentsArr.isEmpty()) {
+            for (CommentView com : commentsArr) {
+                this.comments.getItems().add(com.getUsername() + ":\n" + com.getText());
+            }
+        }
     }
 }

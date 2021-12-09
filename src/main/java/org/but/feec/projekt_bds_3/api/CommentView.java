@@ -6,9 +6,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class CommentView {
+    private IntegerProperty userId = new SimpleIntegerProperty();
     private IntegerProperty id = new SimpleIntegerProperty();
     private StringProperty username = new SimpleStringProperty();
     private StringProperty text = new SimpleStringProperty();
+
+    public int getUserId() {
+        return userId.get();
+    }
+
+    public void setUserId(int userId) {
+        this.userId.set(userId);
+    }
 
     public int getId() {
         return id.get();

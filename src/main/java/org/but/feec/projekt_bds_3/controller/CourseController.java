@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,15 +22,7 @@ import java.util.ArrayList;
 
 public class CourseController {
     private CourseView cv;
-
-    @FXML
-    private AnchorPane apane;
-
-    @FXML
-    private Label certLabel;
-
-    @FXML
-    private Label certLink;
+    private MainViewController parentController;
 
     @FXML
     private ListView<String> completed;
@@ -54,25 +47,10 @@ public class CourseController {
     @FXML
     public void initialize() {}
 
-    public void initData(CourseView cv) {
+    public void initData(CourseView cv, MainViewController parentController) {
+        this.parentController = parentController;
         this.cv = cv;
-        CourseDetailRepository rep = new CourseDetailRepository(cv.getId());
-        completedArr = rep.getCompletedLessons();
-        for (LessonView lv : completedArr) {
-            completed.getItems().add(lv.getName());
-        }
-        uncompletedArr = rep.getUncompletedLessons();
-        for (LessonView lv : uncompletedArr) {
-            uncompleted.getItems().add(lv.getName());
-        }
-        float progress;
-        try {
-            progress = ((float)completedArr.size())/(completedArr.size()+uncompletedArr.size());
-        }
-        catch (ArithmeticException e) {
-            progress = 0;
-        }
-        progressbar.setProgress(progress);
+        loadAll();
     }
 
     public void handleUncompletedLessonClick(javafx.scene.input.MouseEvent mouseEvent) {
@@ -96,12 +74,39 @@ public class CourseController {
             stage.setTitle(temp.getName());
             stage.setScene(scene);
             LessonController controller = loader.getController();
-            controller.initData(temp, cv);
+            controller.initData(temp, cv, this);
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
             //TODO
         }
+    }
+    public void refreshAll() {
+        completed.getItems().clear();
+        uncompleted.getItems().clear();
+        loadAll();
+        parentController.refreshAll();
+    }
+
+    private void loadAll() {
+        CourseDetailRepository rep = new CourseDetailRepository(cv.getId());
+        completedArr = rep.getCompletedLessons();
+        uncompletedArr = rep.getUncompletedLessons();
+        completed.getItems().clear();
+        for (LessonView lv : completedArr) {
+            completed.getItems().add(lv.getName());
+        }
+        for (LessonView lv : uncompletedArr) {
+            uncompleted.getItems().add(lv.getName());
+        }
+        float progress;
+        try {
+            progress = ((float)completedArr.size())/(completedArr.size()+uncompletedArr.size());
+        }
+        catch (ArithmeticException e) {
+            progress = 0;
+        }
+        progressbar.setProgress(progress);
     }
 }

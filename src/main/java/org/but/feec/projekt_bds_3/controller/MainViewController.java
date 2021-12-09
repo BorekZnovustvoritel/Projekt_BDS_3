@@ -1,22 +1,47 @@
 package org.but.feec.projekt_bds_3.controller;
 
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.api.CourseView;
 import org.but.feec.projekt_bds_3.data.CourseRepository;
+import org.but.feec.projekt_bds_3.data.FeedbackRepository;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
 
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class MainViewController {
+    CourseRepository cr = new CourseRepository();
+
+    @FXML
+    private RadioButton lastFRadioButton;
+
+    @FXML
+    private RadioButton searchFRadioButton;
+
+    @FXML
+    private Button searchButton;
+
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private TextField feedbackTextField;
+
+    @FXML
+    private Label feedbackTitleLabel;
+
+    @FXML
+    private Label feedbackLabel;
 
     @FXML
     private TableView<CourseView> courseTable;
@@ -33,10 +58,9 @@ public class MainViewController {
     @FXML
     private TableColumn<CourseView, Float> progressColumn;
 
+
     @FXML
     public void initialize() {
-        CourseRepository cr = new CourseRepository();
-
         courseNameColumn.setCellValueFactory(new PropertyValueFactory<CourseView, String>("name"));
         registeredColumn.setCellValueFactory(new PropertyValueFactory<CourseView, Boolean>("userHasIt"));
         progressColumn.setCellValueFactory(new PropertyValueFactory<CourseView, Float>("progress"));
@@ -44,8 +68,12 @@ public class MainViewController {
 
         ObservableList<CourseView> obsCList = cr.findCourses();
         courseTable.setItems(obsCList);
+        registeredColumn.setSortType(TableColumn.SortType.DESCENDING);
         courseTable.getSortOrder().add(registeredColumn);
 
+        feedbackLabel.setText((new FeedbackRepository()).getLastFeedback());
+        searchButton.setDisable(true);
+        searchField.setDisable(true);
     }
     @FXML
     public void handleRowSelect() {
@@ -54,12 +82,12 @@ public class MainViewController {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(App.class.getResource("fxml/Course.fxml"));
-            Scene scene = new Scene(loader.load(), 1050, 600);
+            Scene scene = new Scene(loader.load(), 330, 400);
             Stage stage = new Stage();
             stage.setTitle(row.getName());
             stage.setScene(scene);
             CourseController controller = loader.getController();
-            controller.initData(row);
+            controller.initData(row, this);
             //Stage stageOld = (Stage) courseTable.getScene().getWindow();
             //stageOld.close();
 
@@ -70,4 +98,45 @@ public class MainViewController {
             //TODO
         }
     }
+
+    @FXML
+    void handleSendFeedback(ActionEvent event) {
+        String feedback = feedbackTextField.getText();
+        FeedbackRepository rep = new FeedbackRepository();
+        rep.submitFeedback(feedback);
+        feedbackLabel.setText(rep.getLastFeedback());
+    }
+
+    @FXML
+    void handleSearch(ActionEvent event) {
+        String text = searchField.getText();
+        String feedbacks = "";
+        for (String feedback : (new FeedbackRepository()).getSearchedFeedback(text)) {
+            feedbacks = feedbacks + "\n" + feedback;
+        }
+        feedbackLabel.setText(feedbacks);
+    }
+
+    @FXML
+    void handleSwitchRadioB(ActionEvent event) {
+        if (lastFRadioButton.isSelected()) {
+            searchButton.setDisable(true);
+            feedbackTitleLabel.setText("Your last feedback: ");
+            feedbackLabel.setText((new FeedbackRepository()).getLastFeedback());
+            searchField.setDisable(true);
+        }
+        else {
+            searchButton.setDisable(false);
+            feedbackTitleLabel.setText("Searched feedbacks: ");
+            searchField.setDisable(false);
+        }
+    }
+
+    public void refreshAll() {
+        ObservableList<CourseView> obsCList = cr.findCourses();
+        courseTable.getItems().clear();
+        courseTable.setItems(obsCList);
+    }
+
+
 }

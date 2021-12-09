@@ -35,9 +35,6 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
-    @FXML
-    private ImageView pic;
-
     private LoginRepository lr;
 
     @FXML
@@ -84,7 +81,7 @@ public class LoginController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(App.class.getResource("fxml/Main.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 1050, 600);
+            Scene scene = new Scene(fxmlLoader.load(), 614, 350);
             Stage stage = new Stage();
             stage.setTitle("Your courses");
             stage.setScene(scene);
@@ -115,12 +112,12 @@ public class LoginController {
         idlestage.setCycleCount(1);
         idlestage.play();
 
-        Optional<ButtonType> result = alert.showAndWait();
+        /*Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK) {
             System.out.println("ok clicked");
         } else if (result.get() == ButtonType.CANCEL) {
             System.out.println("cancel clicked");
-        }
+        }*/
     }
 }
