@@ -93,7 +93,7 @@ public class LoginController {
         }
         catch (IOException e) {
             e.printStackTrace();
-            //TODO
+            logger.error(String.format("Couldn't proceed after a good login beacause of FXML loading error!\nMessage: %s", e.getMessage()));
         }
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -112,12 +112,7 @@ public class LoginController {
         idlestage.setCycleCount(1);
         idlestage.play();
 
-        /*Optional<ButtonType> result = alert.showAndWait();
+        alert.showAndWait();
 
-        if (result.get() == ButtonType.OK) {
-            System.out.println("ok clicked");
-        } else if (result.get() == ButtonType.CANCEL) {
-            System.out.println("cancel clicked");
-        }*/
     }
 }

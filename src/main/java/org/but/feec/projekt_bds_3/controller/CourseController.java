@@ -16,11 +16,14 @@ import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.api.CourseView;
 import org.but.feec.projekt_bds_3.api.LessonView;
 import org.but.feec.projekt_bds_3.data.CourseDetailRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class CourseController {
+    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
     private CourseView cv;
     private MainViewController parentController;
 
@@ -79,7 +82,7 @@ public class CourseController {
 
         } catch (IOException e) {
             e.printStackTrace();
-            //TODO
+            logger.error("Loading lesson failed! "+e.getMessage());
         }
     }
     public void refreshAll() {

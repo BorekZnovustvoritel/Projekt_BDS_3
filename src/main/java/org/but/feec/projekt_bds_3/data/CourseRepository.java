@@ -5,11 +5,14 @@ import javafx.collections.ObservableList;
 import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.api.CourseView;
 import org.but.feec.projekt_bds_3.config.DataSourceConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class CourseRepository {
+    private static final Logger logger = LoggerFactory.getLogger(CourseRepository.class);
     public ObservableList<CourseView> findCourses() {
         try (Connection connection = DataSourceConfig.getConnection();
         PreparedStatement prpstmt = connection.prepareStatement(
@@ -21,9 +24,7 @@ public class CourseRepository {
             prpstmt.setInt(1, App.userId);
             return mapToCourseView(prpstmt, connection);
         } catch (SQLException e) {
-            //TODO rework this
-            System.out.println("Oops, selection failed");
-            e.printStackTrace();
+            logger.error("Findig courses in db failed!\nMessage: "+e.getMessage());
         }
         return null;
     }
@@ -67,8 +68,7 @@ public class CourseRepository {
             }
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            //TODO
+            logger.error("Findig progress in db failed!\nMessage: "+e.getMessage());
         }
         return "0 %";
     }
@@ -88,8 +88,7 @@ public class CourseRepository {
 
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            //TODO
+            logger.error("Findig next lesson in db failed!\nMessage: "+e.getMessage());
         }
         return "Link not found.";
     }

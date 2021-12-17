@@ -5,18 +5,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import org.but.feec.projekt_bds_3.api.CourseView;
-import org.but.feec.projekt_bds_3.data.CourseRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class App extends Application {
     private FXMLLoader floader;
     private AnchorPane mainStage;
     public static int userId;
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
 
-    public static void main(String[] args) {
-        //System.out.println("User 1 has course of this ID:");
-        //System.out.println(new CourseRepository().findCourses(1).getName());
-        launch(args); }
+    public static void main(String[] args) {launch(args); }
 
     @Override
     public void start(Stage primaryStage) {
@@ -30,11 +28,11 @@ public class App extends Application {
 
             primaryStage.setScene(scene);
             primaryStage.show();
+            logger.info("Application started.");
         }
         catch (Exception e) {
-            System.out.println("Exception timee");
             e.printStackTrace();
-            //TODO rework this
+            logger.error("Exception in method start: " + e.getMessage());
             return;
         }
     }

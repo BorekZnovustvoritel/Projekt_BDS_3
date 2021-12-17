@@ -15,11 +15,14 @@ import org.but.feec.projekt_bds_3.data.CourseRepository;
 import org.but.feec.projekt_bds_3.data.FeedbackRepository;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class MainViewController {
+    private static final Logger logger = LoggerFactory.getLogger(MainViewController.class);
     CourseRepository cr = new CourseRepository();
 
     @FXML
@@ -95,16 +98,18 @@ public class MainViewController {
         }
         catch (IOException e) {
             e.printStackTrace();
-            //TODO
+            logger.error("Couldn't open Course window!");
         }
     }
 
     @FXML
     void handleSendFeedback(ActionEvent event) {
         String feedback = feedbackTextField.getText();
+        feedbackTextField.setText("");
         FeedbackRepository rep = new FeedbackRepository();
         rep.submitFeedback(feedback);
         feedbackLabel.setText(rep.getLastFeedback());
+        logger.info(String.format("'%s' entered into feedback textfield.", feedback));
     }
 
     @FXML
@@ -115,6 +120,7 @@ public class MainViewController {
             feedbacks = feedbacks + "\n" + feedback;
         }
         feedbackLabel.setText(feedbacks);
+        logger.info(String.format("'%s' entered into feedback searchfield.", text));
     }
 
     @FXML

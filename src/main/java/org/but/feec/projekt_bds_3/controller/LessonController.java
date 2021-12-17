@@ -14,12 +14,15 @@ import org.but.feec.projekt_bds_3.api.CommentView;
 import org.but.feec.projekt_bds_3.api.CourseView;
 import org.but.feec.projekt_bds_3.api.LessonView;
 import org.but.feec.projekt_bds_3.data.LessonCommentsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class LessonController {
+    private static final Logger logger = LoggerFactory.getLogger(LessonController.class);
     private CourseController parentController;
     private CommentView commentView = new CommentView();
     private LessonView lv;
@@ -73,6 +76,7 @@ public class LessonController {
             comrep.registerCourse(courseView.getId());
         }
         parentController.refreshAll();
+        logger.info(String.format("User %d just finished lesson %d", App.userId, lv.getId()));
     }
 
     @FXML
@@ -82,9 +86,10 @@ public class LessonController {
         LessonCommentsRepository comrep = new LessonCommentsRepository();
         if (comrep.sendComment(lv.getId(), text)) {
             System.out.println("Nahráno.");
-            //TODO
+            logger.info(String.format("User %d just submitted a comment to lesson %d.", App.userId, lv.getId()));
         }
-        //else System.out.println("Ded");
+        else
+            logger.error(String.format("User %d failed to send a comment!", App.userId));
 
         loadComments();
     }
@@ -127,11 +132,15 @@ public class LessonController {
     private void handleDeleteComment() {
         comments.getItems().remove(comments.getSelectionModel().getSelectedIndex());
         commentsArr.remove(comments.getSelectionModel().getSelectedIndex());
-        (new LessonCommentsRepository()).removeComment(commentView.getId());
-        commentView = new CommentView();
-        editCommentButton.setDisable(true);
-        deleteCommentButton.setDisable(true);
-        comments.refresh();
+        if ((new LessonCommentsRepository()).removeComment(commentView.getId())) {
+            commentView = new CommentView();
+            editCommentButton.setDisable(true);
+            deleteCommentButton.setDisable(true);
+            comments.refresh();
+            logger.info(String.format("User %d removed a comment from lesson %d.", App.userId, lv.getId()));
+        }
+        else
+            logger.error(String.format("User %d tried to remove a comment, but failed!", App.userId));
     }
 
     @FXML
@@ -149,7 +158,7 @@ public class LessonController {
         } catch (IOException e) {
 
             e.printStackTrace();
-            //TODO
+            logger.error("Couldn't open comment editor window!");
 
         }
     }

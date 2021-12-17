@@ -4,12 +4,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.api.CommentView;
 import org.but.feec.projekt_bds_3.data.LessonCommentsRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
 public class CommentEditController {
+    private static final Logger logger = LoggerFactory.getLogger(CommentEditController.class);
     private LessonController parentController;
     private ArrayList<CommentView> comments = new ArrayList<>();
     private int idx;
@@ -30,6 +34,7 @@ public class CommentEditController {
         (new LessonCommentsRepository()).editComment(comments.get(idx).getId(), text);
         parentController.getComments().refresh();
         ((Stage)commentField.getScene().getWindow()).close();
+        logger.info(String.format("User %d edited comment %d", App.userId, idx));
     }
 
     @FXML

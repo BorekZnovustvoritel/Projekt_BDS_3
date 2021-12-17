@@ -4,6 +4,8 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.api.LoginView;
 import org.but.feec.projekt_bds_3.config.DataSourceConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoginRepository {
+    private static final Logger logger = LoggerFactory.getLogger(LoginRepository.class);
     private LoginView getLoginView(String email) {
         try (Connection connection = DataSourceConfig.getConnection();
              PreparedStatement prpstmt = connection.prepareStatement(
@@ -24,9 +27,7 @@ public class LoginRepository {
             }
         }
         catch (SQLException e) {
-            //TODO
-            System.out.println("Oops, selection failed");
-            e.printStackTrace();
+            logger.error(String.format("Couldn't get login view!\nMeassage: %s", e.getMessage()));
         }
         return null;
     }
@@ -42,7 +43,7 @@ public class LoginRepository {
         LoginView lw = getLoginView(email);
         if (lw != null) {
             return BCrypt.verifyer().verify(password.toCharArray(), lw.getHashedPwd()).verified;
-        }
+        } //logging is logged in LoginController class.
         return false;
     }
 }

@@ -5,6 +5,8 @@ import javafx.collections.ObservableList;
 import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.api.LessonView;
 import org.but.feec.projekt_bds_3.config.DataSourceConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 
 public class CourseDetailRepository {
     private int courseId;
+    private final static Logger logger = LoggerFactory.getLogger(CourseDetailRepository.class);
 
     public CourseDetailRepository(int courseId) {
         this.courseId = courseId;
@@ -32,7 +35,7 @@ public class CourseDetailRepository {
         }
         catch (SQLException e) {
             e.printStackTrace();
-            //TODO
+            logger.error("Fetching uncompleted lessons from the db failed!\nMessage: "+e.getMessage());
         }
         return null;
     }
@@ -50,8 +53,7 @@ public class CourseDetailRepository {
             return mapToLessonView(rs, true);
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            //TODO
+            logger.error("Fetching completed lessons from the db failed!\nMessage: "+e.getMessage());
         }
         return null;
     }
