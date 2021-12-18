@@ -9,7 +9,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content="Apache Maven Doxia Site Renderer 1.9.2" />
-    <title>Závislosti &#x2013; Závislosti projektu</title>
+    <!--<title>Závislosti &#x2013; Závislosti projektu</title>-->
     <link rel="stylesheet" href="./css/maven-base.css" />
     <link rel="stylesheet" href="./css/maven-theme.css" />
     <link rel="stylesheet" href="./css/site.css" />
@@ -204,7 +204,7 @@
 <td><a class="externalLink" href="https://checkerframework.org">checker-qual</a></td>
 <td>3.5.0</td>
 <td>jar</td>
-<td><a class="externalLink" href="http://opensource.org/licenses/MIT">The MIT License</a></td></tr></table></section></section><a name="Graf_z.C3.A1vislost.C3.AD_projektu"></a><section>
+<!--<td><a class="externalLink" href="http://opensource.org/licenses/MIT">The MIT License</a></td></tr></table></section></section><a name="Graf_z.C3.A1vislost.C3.AD_projektu"></a><section>
 <h2><a name="Graf_z.C3.A1vislost.C3.AD_projektu"></a>Graf z&#xe1;vislost&#xed; projektu</h2>
 <script language="javascript" type="text/javascript">
       function toggleDependencyDetails( divId, imgId )
@@ -224,7 +224,7 @@
           img.alt='[Close]';
         }
       }
-</script>
+</script>-->
 <a name="Strom_z.C3.A1vislosti"></a><section>
 <h3><a name="Strom_z.C3.A1vislosti"></a>Strom z&#xe1;vislosti</h3>
 <ul>
