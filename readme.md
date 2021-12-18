@@ -1,7 +1,7 @@
 Final Project for the course BPC-BDS
 ====================================
 
-[Dependencies](dependencies.html)
+[Dependencies](dependencies.md)
 
 This application is supposed to run a program similar to the learning platform Sololearn. Mine just looks way worse and won't teach you anything.
 
