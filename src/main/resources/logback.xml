@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration debug="true">
+
+    <appender name="roll-by-time" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                log-%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -9,34 +22,13 @@
         </layout>
     </appender>
 
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${HOME_LOG}</file>
-        <append>true</append>
-        <immediateFlush>true</immediateFlush>
-        <encoder>
-            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="roll-by-time" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>target/slf4j/roll-by-time/app.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>target/slf4j/roll-by-time/app.%d{yyyy-MM-dd-HH-mm}.log.zip
-            </fileNamePattern>
-            <maxHistory>20</maxHistory>
-            <totalSizeCap>1MB</totalSizeCap>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %p %m%n</pattern>
-        </encoder>
-    </appender>
-
     <logger name="org.but.feec.projekt_bds_3" level="debug" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <root level="error">
-        <appender-ref ref="CONSOLE"/>
+    <root level="debug">
+        <appender-ref ref="roll-by-time" />
+        <appender-ref ref="CONSOLE" />
     </root>
 
 </configuration>
