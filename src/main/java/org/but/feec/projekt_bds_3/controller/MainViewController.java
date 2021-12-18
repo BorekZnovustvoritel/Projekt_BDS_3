@@ -4,7 +4,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -13,12 +12,9 @@ import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.api.CourseView;
 import org.but.feec.projekt_bds_3.data.CourseRepository;
 import org.but.feec.projekt_bds_3.data.FeedbackRepository;
-import org.controlsfx.validation.ValidationSupport;
-import org.controlsfx.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class MainViewController {
@@ -69,7 +65,7 @@ public class MainViewController {
         progressColumn.setCellValueFactory(new PropertyValueFactory<CourseView, Float>("progress"));
         nextLessonColumn.setCellValueFactory(new PropertyValueFactory<CourseView, String>("nextLesson"));
 
-        ObservableList<CourseView> obsCList = cr.findCourses();
+        ObservableList<CourseView> obsCList = cr.findAllCourses();
         courseTable.setItems(obsCList);
         registeredColumn.setSortType(TableColumn.SortType.DESCENDING);
         courseTable.getSortOrder().add(registeredColumn);
@@ -139,7 +135,7 @@ public class MainViewController {
     }
 
     public void refreshAll() {
-        ObservableList<CourseView> obsCList = cr.findCourses();
+        ObservableList<CourseView> obsCList = cr.findAllCourses();
         courseTable.getItems().clear();
         courseTable.setItems(obsCList);
     }

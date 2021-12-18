@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class CourseRepository {
     private static final Logger logger = LoggerFactory.getLogger(CourseRepository.class);
-    public ObservableList<CourseView> findCourses() {
+    public ObservableList<CourseView> findAllCourses() {
         try (Connection connection = DataSourceConfig.getConnection();
         PreparedStatement prpstmt = connection.prepareStatement(
                 "SELECT c.id, c.name, c.description, u.user_id FROM project.course c " +
