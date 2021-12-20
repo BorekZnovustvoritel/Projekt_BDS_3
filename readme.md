@@ -34,7 +34,7 @@ Hmm, how do I run this App?
 - `bash ./timed_backup.sh`
 - `exit`
 - `mkdir backups`
-- `sudo chmod 766 backups`
+- `sudo chmod 777 backups`
 
 <h3>Run! (Not you, the program.)</h3>
 

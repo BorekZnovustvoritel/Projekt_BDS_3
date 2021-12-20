@@ -19,13 +19,20 @@ public class LessonCommentsRepository {
     public ArrayList<CommentView> findComments(int lessonId, boolean filterUserComments) {
         String query = "";
         if (filterUserComments) {
-            query = "SELECT c.user_id, c.id, u.first_name || ' ' || u.last_name AS username, c.text " +
-                "FROM project.user u RIGHT JOIN project.comments c " +
-                "ON u.id = c.user_id " +
-                "WHERE c.lesson_id = ? AND c.user_id = ?;";
+            query = "SELECT c.user_id, c.id, " +
+                    "pgp_sym_decrypt(u.first_name::bytea, 'supertajneheslo') " +
+                    "|| ' ' || " +
+                    "pgp_sym_decrypt(u.last_name::bytea, 'supertajneheslo') AS username, c.text " +
+                    "FROM project.user u RIGHT JOIN project.comments c " +
+                    "ON u.id = c.user_id " +
+                    "WHERE c.lesson_id = ? AND c.user_id = ?;";
         }
         else {
-            query = "SELECT c.user_id, c.id, u.first_name || ' ' || u.last_name AS username, c.text " +
+            query = "SELECT c.user_id, c.id, " +
+                    "pgp_sym_decrypt(u.first_name::bytea, 'supertajneheslo') " +
+                    "|| ' ' || " +
+                    "pgp_sym_decrypt(u.last_name::bytea, 'supertajneheslo') AS username, " +
+                    "c.text " +
                     "FROM project.user u RIGHT JOIN project.comments c " +
                     "ON u.id = c.user_id " +
                     "WHERE c.lesson_id = ?;";
