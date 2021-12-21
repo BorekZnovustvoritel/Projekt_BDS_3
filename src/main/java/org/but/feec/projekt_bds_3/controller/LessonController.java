@@ -5,10 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.api.CommentView;
 import org.but.feec.projekt_bds_3.api.CourseView;
@@ -18,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class LessonController {
@@ -32,12 +30,12 @@ public class LessonController {
 
     @FXML
     private ListView<String> comments;
-    private ArrayList<CommentView> commentsArr;
+    private List<CommentView> commentsArr;
 
     ListView<String> getComments() {
         return comments;
     }
-    ArrayList<CommentView> getCommentsArr() {
+    List<CommentView> getCommentsArr() {
         return commentsArr;
     }
 
@@ -117,14 +115,15 @@ public class LessonController {
     @FXML
     void handleSelectComment(MouseEvent event) {
         int idx = comments.getSelectionModel().getSelectedIndex();
-        commentView = commentsArr.get(idx);
-        if (commentView.getUserId() == App.userId) {
-            editCommentButton.setDisable(false);
-            deleteCommentButton.setDisable(false);
-        }
-        else {
-            editCommentButton.setDisable(true);
-            deleteCommentButton.setDisable(true);
+        if (idx != -1) {
+            commentView = commentsArr.get(idx);
+            if (commentView.getUserId() == App.userId) {
+                editCommentButton.setDisable(false);
+                deleteCommentButton.setDisable(false);
+            } else {
+                editCommentButton.setDisable(true);
+                deleteCommentButton.setDisable(true);
+            }
         }
     }
 
@@ -179,7 +178,7 @@ public class LessonController {
         completeButton.setDisable(true);
         completeButton.setText("Already Completed");
     }
-    void setAllComments(ArrayList<CommentView> commentsArr) {
+    void setAllComments(List<CommentView> commentsArr) {
         this.commentsArr = commentsArr;
         comments.getItems().clear();
         if (!commentsArr.isEmpty()) {

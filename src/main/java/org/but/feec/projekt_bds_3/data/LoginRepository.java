@@ -14,7 +14,7 @@ import java.sql.SQLException;
 
 public class LoginRepository {
     private static final Logger logger = LoggerFactory.getLogger(LoginRepository.class);
-    private LoginView getLoginView(String email) {
+    public LoginView getLoginView(String email) {
         try (Connection connection = DataSourceConfig.getConnection();
              PreparedStatement prpstmt = connection.prepareStatement(
                      "SELECT id, email, password FROM project.\"user\" WHERE email = ?;"
@@ -37,14 +37,6 @@ public class LoginRepository {
         lw.setHashedPwd(rs.getString("password"));
         App.userId = rs.getInt("id");
         return lw;
-    }
-
-    public boolean login(String email, String password) {
-        LoginView lw = getLoginView(email);
-        if (lw != null) {
-            return BCrypt.verifyer().verify(password.toCharArray(), lw.getHashedPwd()).verified;
-        } //logging is logged in LoginController class.
-        return false;
     }
 }
 

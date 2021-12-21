@@ -42,4 +42,14 @@ public class CommentView {
     public void setText(String text) {
         this.text.set(text);
     }
+
+    @Override
+    public String toString() {
+        return "CommentView{" +
+                "userId=" + userId +
+                ", id=" + id +
+                ", username=" + username +
+                ", text=" + text +
+                '}';
+    }
 }

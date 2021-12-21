@@ -11,11 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CommentEditController {
     private static final Logger logger = LoggerFactory.getLogger(CommentEditController.class);
     private LessonController parentController;
-    private ArrayList<CommentView> comments = new ArrayList<>();
+    private List<CommentView> comments = new ArrayList<>();
     private int idx;
 
     @FXML

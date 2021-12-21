@@ -7,12 +7,12 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.data.LoginRepository;
+import org.but.feec.projekt_bds_3.service.LoginService;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 import org.slf4j.Logger;
@@ -20,11 +20,11 @@ import org.slf4j.LoggerFactory;
 import javafx.fxml.FXML;
 
 import java.io.IOException;
-import java.util.Optional;
 
 
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private LoginService loginService = new LoginService();
 
     @FXML
     private TextField emailField;
@@ -62,7 +62,7 @@ public class LoginController {
     private void handleSignIn() {
         String email = emailField.getText();
         String password = passwordField.getText();
-        if (lr.login(email, password)) {
+        if (loginService.login(email, password)) {
             logger.info("User " + email + " logged in!");
             handleGoodLogin();
         }
@@ -95,7 +95,9 @@ public class LoginController {
             e.printStackTrace();
             logger.error(String.format("Couldn't proceed after a good login beacause of FXML loading error!\nMessage: %s", e.getMessage()));
         }
-
+        showGoodLogin();
+    }
+    private void showGoodLogin() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Login successful");
         alert.setHeaderText("Login successful!");
@@ -113,6 +115,5 @@ public class LoginController {
         idlestage.play();
 
         alert.showAndWait();
-
     }
 }

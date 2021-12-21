@@ -1,16 +1,12 @@
 package org.but.feec.projekt_bds_3.controller;
 
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.but.feec.projekt_bds_3.App;
 import org.but.feec.projekt_bds_3.api.CourseView;
@@ -20,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 public class CourseController {
     private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
@@ -29,14 +25,14 @@ public class CourseController {
 
     @FXML
     private ListView<String> completed;
-    private ArrayList<LessonView> completedArr;
+    private List<LessonView> completedList;
 
     @FXML
     private ProgressBar progressbar;
 
     @FXML
     private ListView<String> uncompleted;
-    private ArrayList<LessonView> uncompletedArr;
+    private List<LessonView> uncompletedList;
 
     @FXML
     private Button backButton;
@@ -58,15 +54,17 @@ public class CourseController {
 
     public void handleUncompletedLessonClick(javafx.scene.input.MouseEvent mouseEvent) {
         int idx = uncompleted.getSelectionModel().getSelectedIndex();
-        LessonView temp = uncompletedArr.get(idx);
-
-        loadLesson(temp);
+        if (idx != -1) {
+            LessonView temp = uncompletedList.get(idx);
+            loadLesson(temp);
+        }
     }
     public void handleCompletedLessonClick(javafx.scene.input.MouseEvent mouseEvent) {
         int idx = completed.getSelectionModel().getSelectedIndex();
-        LessonView temp = completedArr.get(idx);
-
-        loadLesson(temp);
+        if (idx != -1) {
+            LessonView temp = completedList.get(idx);
+            loadLesson(temp);
+        }
     }
     public void loadLesson(LessonView temp) {
         try {
@@ -94,18 +92,18 @@ public class CourseController {
 
     private void loadAll() {
         CourseDetailRepository rep = new CourseDetailRepository(cv.getId());
-        completedArr = rep.getCompletedLessons();
-        uncompletedArr = rep.getUncompletedLessons();
+        completedList = rep.getCompletedLessons();
+        uncompletedList = rep.getUncompletedLessons();
         completed.getItems().clear();
-        for (LessonView lv : completedArr) {
+        for (LessonView lv : completedList) {
             completed.getItems().add(lv.getName());
         }
-        for (LessonView lv : uncompletedArr) {
+        for (LessonView lv : uncompletedList) {
             uncompleted.getItems().add(lv.getName());
         }
         float progress;
         try {
-            progress = ((float)completedArr.size())/(completedArr.size()+uncompletedArr.size());
+            progress = ((float) completedList.size())/(completedList.size()+ uncompletedList.size());
         }
         catch (ArithmeticException e) {
             progress = 0;

@@ -1,5 +1,6 @@
 package org.but.feec.projekt_bds_3.controller;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -65,7 +66,7 @@ public class MainViewController {
         progressColumn.setCellValueFactory(new PropertyValueFactory<CourseView, Float>("progress"));
         nextLessonColumn.setCellValueFactory(new PropertyValueFactory<CourseView, String>("nextLesson"));
 
-        ObservableList<CourseView> obsCList = cr.findAllCourses();
+        ObservableList<CourseView> obsCList = FXCollections.observableArrayList(cr.findAllCourses());
         courseTable.setItems(obsCList);
         registeredColumn.setSortType(TableColumn.SortType.DESCENDING);
         courseTable.getSortOrder().add(registeredColumn);
@@ -135,7 +136,7 @@ public class MainViewController {
     }
 
     public void refreshAll() {
-        ObservableList<CourseView> obsCList = cr.findAllCourses();
+        ObservableList<CourseView> obsCList = FXCollections.observableArrayList(cr.findAllCourses());
         courseTable.getItems().clear();
         courseTable.setItems(obsCList);
     }

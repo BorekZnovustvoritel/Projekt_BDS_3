@@ -11,4 +11,12 @@ public class LoginView {
     public void setEmail(String email) {this.email.setValue(email);}
     public String getHashedPwd() {return this.hashedPwd.get();}
     public void setHashedPwd(String hashedPwd) {this.hashedPwd.setValue(hashedPwd);}
+
+    @Override
+    public String toString() {
+        return "LoginView{" +
+                "email=" + email +
+                ", hashedPwd=" + hashedPwd +
+                '}';
+    }
 }

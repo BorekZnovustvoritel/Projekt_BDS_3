@@ -30,4 +30,14 @@ public class LessonView {
     private StringProperty name = new SimpleStringProperty();
     private StringProperty link = new SimpleStringProperty();
     private BooleanProperty completed = new SimpleBooleanProperty();
+
+    @Override
+    public String toString() {
+        return "LessonView{" +
+                "id=" + id +
+                ", name=" + name +
+                ", link=" + link +
+                ", completed=" + completed +
+                '}';
+    }
 }

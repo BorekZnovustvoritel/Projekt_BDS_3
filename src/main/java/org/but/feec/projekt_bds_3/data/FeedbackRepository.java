@@ -10,13 +10,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FeedbackRepository {
     private  static final Logger logger = LoggerFactory.getLogger(FeedbackRepository.class);
     public void submitFeedback(String feedback) {
         try (Connection connection = DataSourceConfig.getConnection();
-             Statement stmt = connection.createStatement())
-        {
+             Statement stmt = connection.createStatement()) {
             String query = String.format("INSERT INTO project.feedback (user_id, feedback) " +
                     "VALUES (%d, '%s');", App.userId, feedback);
             logger.info(String.format("User %d submitted feedback: '%s'.\nUsed query: %s", App.userId, feedback, query));
@@ -28,8 +28,7 @@ public class FeedbackRepository {
     }
     public String getLastFeedback() {
         try (Connection connection = DataSourceConfig.getConnection();
-             Statement stmt = connection.createStatement())
-        {
+             Statement stmt = connection.createStatement()) {
             String query = String.format("SELECT feedback FROM project.feedback " +
                     "WHERE user_id = %d AND id = (SELECT MAX(id) FROM project.feedback " +
                     "WHERE user_id = %d)", App.userId, App.userId);
@@ -44,10 +43,9 @@ public class FeedbackRepository {
         }
         return null;
     }
-    public ArrayList<String> getSearchedFeedback(String text) {
+    public List<String> getSearchedFeedback(String text) {
         try (Connection connection = DataSourceConfig.getConnection();
-             Statement stmt = connection.createStatement())
-        {
+             Statement stmt = connection.createStatement()) {
             String query = String.format("SELECT f.feedback FROM project.feedback f " +
                     "WHERE f.feedback like '%s' AND user_id = %d ", "%"+text+"%", App.userId);
             logger.info(String.format("User searched for feedbacks using a query: %s", query));

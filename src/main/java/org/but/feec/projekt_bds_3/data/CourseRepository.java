@@ -10,10 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CourseRepository {
     private static final Logger logger = LoggerFactory.getLogger(CourseRepository.class);
-    public ObservableList<CourseView> findAllCourses() {
+    public List<CourseView> findAllCourses() {
         try (Connection connection = DataSourceConfig.getConnection();
         PreparedStatement prpstmt = connection.prepareStatement(
                 "SELECT c.id, c.name, c.description, u.user_id FROM project.course c " +
@@ -29,8 +30,8 @@ public class CourseRepository {
         return null;
     }
 
-    private ObservableList<CourseView> mapToCourseView(PreparedStatement prpstmt, Connection connection) throws SQLException {
-        ArrayList<CourseView> ans = new ArrayList<>();
+    private List<CourseView> mapToCourseView(PreparedStatement prpstmt, Connection connection) throws SQLException {
+        List<CourseView> ans = new ArrayList<>();
         ResultSet rs = prpstmt.executeQuery();
         while (rs.next()) {
             CourseView course = new CourseView();
@@ -47,7 +48,7 @@ public class CourseRepository {
             course.setNextLesson(findLesson(courseId, connection));
             ans.add(course);
         }
-        return FXCollections.observableArrayList(ans);
+        return ans;
     }
 
     private String findProgress(int courseId, Connection connection) {

@@ -13,10 +13,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class LessonCommentsRepository {
     private  static final Logger logger = LoggerFactory.getLogger(LessonCommentsRepository.class);
-    public ArrayList<CommentView> findComments(int lessonId, boolean filterUserComments) {
+    public List<CommentView> findComments(int lessonId, boolean filterUserComments) {
         String query = "";
         if (filterUserComments) {
             query = "SELECT c.user_id, c.id, " +
